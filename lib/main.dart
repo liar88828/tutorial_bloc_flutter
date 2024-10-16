@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial_bloc/blocs/counter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,17 +56,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  CounterBloc bloc = CounterBloc();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -108,18 +104,33 @@ class _MyHomePageState extends State<MyHomePage> {
             const Text(
               'You have pushed the button this many times:',
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    bloc.reducer.add("LESS");
+                  },
+                  icon: Icon(Icons.remove),
+                ),
+                StreamBuilder(
+                    stream: bloc.output,
+                    initialData: bloc.counter,
+                    builder: (context, snapshot) => Text(
+                          '${snapshot.data}',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        )),
+                IconButton(
+                  onPressed: () {
+                    bloc.reducer.add("ADD");
+                  },
+                  icon: Icon(Icons.add),
+                )
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
