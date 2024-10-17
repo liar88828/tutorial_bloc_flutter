@@ -1,18 +1,18 @@
 import 'dart:async';
 
-class CounterBloc {
+class OldCounterBloc {
   int _counter = 0;
   int get counter => _counter;
 
-  StreamController _inputController = StreamController();
+  final StreamController _inputController = StreamController();
   StreamSink get reducer => _inputController.sink;
 
-  StreamController _outController = StreamController();
+  final StreamController _outController = StreamController();
   StreamSink get _sinkOut => _outController.sink;
 
   Stream get output => _outController.stream;
 
-  CounterBloc() {
+  OldCounterBloc() {
     _inputController.stream.listen((event) {
       if (event == 'ADD') {
         _counter++;
