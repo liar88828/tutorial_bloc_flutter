@@ -1,6 +1,7 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tutorial_bloc/color_bloc/color_bloc.dart';
 import 'package:tutorial_bloc/counter_bloc/counter_bloc.dart';
 import 'package:tutorial_bloc/counter_bloc/counter_event.dart';
 import 'package:tutorial_bloc/counter_bloc/counter_state.dart';
@@ -15,8 +16,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CounterBloc>(
-        create: (context) => CounterBloc(),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider<CounterBloc>(create: (context) => CounterBloc()),
+          BlocProvider<ColorBloc>(create: (context) => ColorBloc())
+        ],
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
@@ -41,6 +45,13 @@ class MyHome extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          BlocBuilder<ColorBloc, ColorState>(builder: (context, state) {
+            return Container(
+              color: state.color,
+              height: 200,
+              width: 200,
+            );
+          }),
           BlocConsumer<CounterBloc, CounterState>(builder: (context, state) {
             return Text(
               state.counter.toString(),
@@ -92,7 +103,11 @@ class MyHome extends StatelessWidget {
               builder: (context, state) {
                 return Center(
                   child: Container(
-                    child: Text(state.toString()),
+                    child: IconButton(
+                        onPressed: () {
+                          context.read<ColorBloc>().add(ColorResetEvent());
+                        },
+                        icon: Icon(Icons.swap_calls)),
                     color: state ? Colors.green : Colors.red,
                   ),
                 );
@@ -104,6 +119,7 @@ class MyHome extends StatelessWidget {
                 style: IconButton.styleFrom(backgroundColor: Colors.blue),
                 onPressed: () {
                   context.read<CounterBloc>().add(CounterDecrementEvent());
+                  context.read<ColorBloc>().add(ColorDecrementEvent());
                 },
                 icon: const Icon(Icons.remove),
               ),
@@ -124,6 +140,7 @@ class MyHome extends StatelessWidget {
                 style: IconButton.styleFrom(backgroundColor: Colors.blue),
                 onPressed: () {
                   context.read<CounterBloc>().add(CounterIncrementEvent());
+                  context.read<ColorBloc>().add(ColorIncrementEvent());
                 },
                 icon: const Icon(Icons.add),
               )
