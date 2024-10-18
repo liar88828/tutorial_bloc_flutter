@@ -41,6 +41,26 @@ class MyHome extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          BlocConsumer<CounterBloc, CounterState>(builder: (context, state) {
+            return Text(
+              state.counter.toString(),
+            );
+          }, listener: (context, state) {
+            if (state.counter >= 10) {
+              const snackBar = SnackBar(
+                elevation: 0,
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                content: AwesomeSnackbarContent(
+                    title: "Working!!",
+                    message: 'This example Bloc Listener!!',
+                    contentType: ContentType.help),
+              );
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(snackBar);
+            }
+          }),
           BlocListener<CounterBloc, CounterState>(
             listenWhen: (previous, current) {
               // return false;// will not show the snackbar
