@@ -87,6 +87,16 @@ class MyHome extends StatelessWidget {
           const Text(
             'You have pushed the button this many times:',
           ),
+          BlocSelector<CounterBloc, CounterState, bool>(
+              selector: (state) => state.counter >= 3 ? true : false,
+              builder: (context, state) {
+                return Center(
+                  child: Container(
+                    child: Text(state.toString()),
+                    color: state ? Colors.green : Colors.red,
+                  ),
+                );
+              }),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
